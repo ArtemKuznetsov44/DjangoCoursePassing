@@ -93,6 +93,15 @@ class Movie(models.Model):
     def get_absolute_url(self):
         # The REVERSE method will configurate the url by its name and specified in kwargs dictionary params:
         return reverse('movie_detail', kwargs={'slug': self.url})
+
+    #
+    def get_review(self):
+        """
+        This method will return our reviews for current movie object where parent of review will be null
+        :return: Reviews with null parent
+        """
+        return self.reviews_set.filter(parent__isnull=True)
+
     class Meta:
         verbose_name = 'Movie'
         verbose_name_plural = 'Movies'

@@ -50,9 +50,11 @@ class AddReview(View):
         # With such code we get data from request.POST dictionary into our form and fill our form.
         # With form, we can check that data is valid
         form = forms.AddReviewForm(request.POST)
+        movie = Movie.objects.get(pk=pk)
 
         # Check that form is valid:
         if form.is_valid():
+
             # When we call save in model form object without commit=False param, our object will save in db,
             # but in our case we stop this event, because we need to add the movie pk to save our Review.
             # Our form does not contain such field to get pk of movie from user, but our Review model
@@ -60,12 +62,16 @@ class AddReview(View):
             # So we need to add to form movie by hands/
             form = form.save(commit=False)
 
+            # In our post request we try to find parent
+            if request.POST.get('parent', None):
+                form.parent_id = int(request.POST.get('parent'))
+
             # form.movie need to get Movie model object but with from.movie_id construction we can use only integer pk
             # value and django will use this value to make relationship for ForeignKeyField
             # More that, movie_id it is a column name in db table for Reviews.
             # without needs to get Movie object.
-            form.movie_id = pk
+            form.movie = movie
             # We use ModelForm class - so form.save() command will create new object in our db.
             form.save()
 
-        return redirect('/')
+        return redirect(movie.get_absolute_url())
