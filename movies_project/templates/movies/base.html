@@ -1,0 +1,31 @@
+<!-- Inheriting BASE HTML file we can swap our content and add necessary layout  -->
+{% extends 'base.html' %}
+<!-- TITLE block is the block for display titles depends on page -->
+{% block title %} {% endblock title %}
+
+<!-- CONTENT block-->
+{% block content %}
+    <section class="ab-info-main py-md-5 py-4 editContent" style="padding-left: 3rem; padding-right: 3rem;">
+        <!-- Use container block because it is necessary to change some bootstrap config classes for current div -->
+        {% block container %}
+            <div class="container-fluid py-md-3">
+        {% endblock container %}
+
+        <div class="row">
+            <!-- Use sidebar block because it is necessary to change some bootstrap config classes for current div -->
+            {% block sidebar %}
+                <div class="side-bar col-lg-3">
+            {% endblock sidebar %}
+
+            <!-- Include our side as the html file -->
+            {% include 'include/sidebar.html' %}
+            </div>
+
+            <!-- MOVIE block depends on file (detail our list) can display the list of movies our single movie -->
+            {% block movie %}
+            {% endblock movie %}
+
+        </div>
+        </div>
+    </section>
+{% endblock content %}
