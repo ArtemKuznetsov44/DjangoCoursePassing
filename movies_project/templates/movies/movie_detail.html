@@ -1,4 +1,5 @@
 {% extends 'movies/base.html' %}
+{% load static %}
 
 {% block title %} {{ movie.title }} {% endblock title %}
 {% block container %}
@@ -147,10 +148,11 @@
                 <!-- contact form grid -->
                 <div class="contact-single">
                     <h3 class="editContent" style="outline: none; cursor: inherit;">
-                                    <span class="sub-tittle editContent"
-                                          style="outline: none; cursor: inherit;">02</span>Оставить отзыв</h3>
-                    <form action="{% url 'add_review' pk=movie.pk %}" method="post" class="mt-4">
+                        <!-- With using relatingName by default through the movie object we can get the count of all reviews -->
+                        <span class="sub-tittle editContent">{{ movie.reviews_set.count }}</span> Оставить отзыв</h3>
+                    <form action="{% url 'add_review' pk=movie.pk %}" method="post" class="mt-4" id="formReview">
                         {% csrf_token %}
+                        <input type="hidden" name="parent" id="contactparent" value="">
                         <div class="form-group editContent">
                             <label for="contactcomment" class="editContent">
                                 Ваш комментарий *
@@ -183,9 +185,9 @@
                 <!--  //contact form grid ends here -->
             </div>
         </div>
-        {% for review in movie.reviews_set.all %}
+        {% for review in movie.get_review %}
             <div class="media py-5">
-                <img src="bundles/images/te2.jpg" class="mr-3 img-fluid" alt="image">
+                <img src="{% static 'images/te2.jpg' %}" class="mr-3 img-fluid" alt="image">
                 <div class="media-body mt-4">
                     <h5 class="mt-0 editContent">
                         {{ review.name }}
@@ -193,27 +195,35 @@
                     <p class="mt-2 editContent">
                         {{ review.text }}
                     </p>
+                    <!-- When we use tag <a> with href where we specify the element ID
+                    we can move our user to the element with such id -->
+                    <a href="#formReview" onclick="addReview('{{ review.name }}', '{{ review.pk }}')"> Ответить </a>
 
-                    {#                    <div class="media mt-5 editContent"#}
-                    {#                         style="outline: none; cursor: inherit;">#}
-                    {#                        <a class="pr-3" href="#">#}
-                    {#                            <img src="bundles/images/te1.jpg" class="img-fluid "#}
-                    {#                                 alt="image" style="outline: none; cursor: inherit;">#}
-                    {#                        </a>#}
-                    {#                        <div class="media-body">#}
-                    {#                            <h5 class="mt-0 editContent"#}
-                    {#                                style="outline: none; cursor: inherit;">Leia Organa</h5>#}
-                    {#                            <p class="mt-2 editContent"#}
-                    {#                               style="outline: none; cursor: inherit;"> Cras sit amet#}
-                    {#                                nibh libero, in gravida nulla. Nulla vel metus#}
-                    {#                                scelerisque ante sollicitudin. Cras purus odio,#}
-                    {#                                vestibulum in vulputate at, tempus viverra turpis. Fusce#}
-                    {#                                condimentum nunc ac nisi vulputate fringilla..</p>#}
-                    {#                        </div>#}
-                    {#                    </div>#}
+                    <!-- In current loop we are getting all reviews for current/parent review -->
+                    {% for rew in review.reviews_set.all %}
+                        <div class="media mt-5 editContent">
+                            <a class="pr-3" href="#">
+                                <img src="{% static 'images/te2.jpg' %}" class="img-fluid "
+                                     alt="image" style="outline: none; cursor: inherit;">
+                            </a>
+                            <div class="media-body">
+                                <h5 class="mt-0 editContent">{{ rew.name }}</h5>
+                                <p class="mt-2 editContent"> {{ rew.text }} </p>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         {% endfor %}
     </div>
     </div>
+    <script>
+        // In this function, when we click on our a-href, we need to insert ID of parent review into the hidden input in
+        // our review form, and review name will be inserted into text-field
+        function addReview(reviewName, reviewPk) {
+            // Insert the review pk value into the hidden input in form:
+            document.getElementById('contactparent').value = reviewPk;
+            document.getElementById('contactcomment').innerText = `${reviewName}, `
+        }
+    </script>
 {% endblock movie %}
