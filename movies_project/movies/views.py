@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.views.generic import ListView, DetailView
 
 from .models import *
+from . import forms
 
 
 # Create your views here.
@@ -23,6 +24,8 @@ from .models import *
 
 
 class MoviesListView(ListView):
+    """ ListView class to display all movies as list of data """
+
     model = Movie
     queryset = Movie.objects.filter(draft=False)
     context_object_name = 'movies'
@@ -30,9 +33,39 @@ class MoviesListView(ListView):
 
 
 class MovieDetailView(DetailView):
+    """ DetailView class for display one movie with details """
+
     model = Movie
     # slug_field - its an attribute to specify the field name of our model which we use
     # instead default slug field in model
     slug_field = 'url'
     context_object_name = 'movie'
     template_name = 'movies/movie_detail.html'
+
+
+class AddReview(View):
+    """ View class to add reviews with form to create new review """
+
+    def post(self, request, pk):
+        # With such code we get data from request.POST dictionary into our form and fill our form.
+        # With form, we can check that data is valid
+        form = forms.AddReviewForm(request.POST)
+
+        # Check that form is valid:
+        if form.is_valid():
+            # When we call save in model form object without commit=False param, our object will save in db,
+            # but in our case we stop this event, because we need to add the movie pk to save our Review.
+            # Our form does not contain such field to get pk of movie from user, but our Review model
+            # contains such field.
+            # So we need to add to form movie by hands/
+            form = form.save(commit=False)
+
+            # form.movie need to get Movie model object but with from.movie_id construction we can use only integer pk
+            # value and django will use this value to make relationship for ForeignKeyField
+            # More that, movie_id it is a column name in db table for Reviews.
+            # without needs to get Movie object.
+            form.movie_id = pk
+            # We use ModelForm class - so form.save() command will create new object in our db.
+            form.save()
+
+        return redirect('/')

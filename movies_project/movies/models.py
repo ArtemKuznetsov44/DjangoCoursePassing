@@ -98,11 +98,11 @@ class Movie(models.Model):
         verbose_name_plural = 'Movies'
 
 
-class MovieShorts(models.Model):
+class MovieShots(models.Model):
     """Movie Shorts Model"""
     title = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to='movie_shorts/'),
+    image = models.ImageField(upload_to='movie_shots/', null=True)
     # on_delete=models.CASCADE - that's mean that when we will delete movie all related movie short will be deleted
     movie = models.ForeignKey(to='Movie', on_delete=models.CASCADE)
 
@@ -115,8 +115,8 @@ class MovieShorts(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = 'MovieShort'
-        verbose_name_plural = 'MovieShorts'
+        verbose_name = 'MovieShot'
+        verbose_name_plural = 'MovieShots'
 
 
 class RatingStar(models.Model):
