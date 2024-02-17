@@ -11,7 +11,7 @@ from .models import *
 #
 #     def get(self, request):
 #         movies = Movie.objects.all()
-#         return render(request, template_name='movies/movies.html', context={'movies': movies})
+#         return render(request, template_name='movies/movies_list.html', context={'movies': movies})
 #
 #
 # class MovieDetailView(View):
@@ -26,7 +26,7 @@ class MoviesListView(ListView):
     model = Movie
     queryset = Movie.objects.filter(draft=False)
     context_object_name = 'movies'
-    template_name = 'movies/movies.html'
+    template_name = 'movies/movies_list.html'
 
 
 class MovieDetailView(DetailView):
