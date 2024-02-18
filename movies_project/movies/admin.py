@@ -1,7 +1,25 @@
 from django.contrib import admin
+from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib.admin.options import StackedInline
 from .models import *
+
+# Here we describe the class for ckeditor widget:
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
+
+class MovieAdminForm(forms.ModelForm):
+    """ Class of ModelForm where we have the field with CKEditorWidget,
+    but we will use CKEditorUploadingWidget to have and opportunity to upload images """
+
+    # This is our field with CKEditorWidget or CKEditorUploadingWidget.
+    # The name of current field is the same as in Movie model
+    description = forms.CharField(widget=CKEditorUploadingWidget())
+
+    class Meta:
+        # We use Movie model just because we want to work with it:
+        model = Movie
+        fields = '__all__'
 
 
 # Register your models here.
@@ -61,6 +79,8 @@ class MovieAdmin(admin.ModelAdmin):
     save_as = True
     # Attribute to specify fields to add them without opening the edit form:
     list_editable = ('draft',)
+    # With FORM attribute we can specify the form class which we want to use for current model in django-admin panel:
+    form = MovieAdminForm
     readonly_fields = ('get_image',)
     # With FIELDS attribute we can specify fields which we want to see in one row and only fields in FIELDS attribute we
     # will see in our forms, all others will be deleted:
@@ -173,10 +193,7 @@ class MovieShotsAdmin(admin.ModelAdmin):
 
 admin.site.register(RatingStar)
 
-
 # With this param we can replace the default django-admin page title:
 admin.site.site_title = 'Django Movies Project'
 # With this param we can replace the default django-admin panel on the top of the page:
 admin.site.site_header = 'Django Movies Project'
-
-
