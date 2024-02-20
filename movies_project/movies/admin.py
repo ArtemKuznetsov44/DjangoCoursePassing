@@ -47,13 +47,15 @@ class ReviewInline(admin.TabularInline):
 class MovieShotsInLine(admin.TabularInline):
     model = MovieShots
     extra = 1
+    # Image field and get_image field are not the same!
+    # Image - from our model, get_image - new field for display the preview of our image.
     readonly_fields = ('get_image',)
 
     def get_image(self, obj):
         """
         Current method get the obj - current actor object
-        :param obj: Current Actor
-        :return: MarkSafe string with img-html-tag to display current actor image
+        :param obj: Current MovieShot object from models.py
+        :return: MarkSafe string with img-html-tag to display current MovieShot image
         """
 
         # Method mark_safe is used to display html tags not as simple string but like a working html-tag.
@@ -79,8 +81,13 @@ class MovieAdmin(admin.ModelAdmin):
     save_as = True
     # Attribute to specify fields to add them without opening the edit form:
     list_editable = ('draft',)
+    # ACTIONS attribute is used to add our own actions into admin model:
+    # We can see these actions in the drop-down list of actions when viewing our table
+    actions = ['mark_as_draft', 'unmark_as_draft']
     # With FORM attribute we can specify the form class which we want to use for current model in django-admin panel:
     form = MovieAdminForm
+    # Poster field and get_image field are not the same!
+    # Image - from our model, get_image - new field for display the preview of our image.
     readonly_fields = ('get_image',)
     # With FIELDS attribute we can specify fields which we want to see in one row and only fields in FIELDS attribute we
     # will see in our forms, all others will be deleted:
@@ -116,13 +123,33 @@ class MovieAdmin(admin.ModelAdmin):
     def get_image(self, obj):
         """
         Current method get the obj - current actor object
-        :param obj: Current Actor
-        :return: MarkSafe string with img-html-tag to display current actor image
+        :param obj: Current Movie object from models.py
+        :return: MarkSafe string with img-html-tag to display current movie poster
         """
 
         # Method mark_safe is used to display html tags not as simple string but like a working html-tag.
         # This method mark string with html for django like a safe string, which can be used like a tag:
         return mark_safe(f'<img src={obj.poster.url} width="60" height="80" style="object-fit: cover;"')
+
+    def mark_as_draft(self, request, queryset, draft_value=True):
+        """ Action for admin model to unpublished movies """
+
+        updated_count = queryset.update(draft=draft_value)
+        message_bit = 'One row was updated' if updated_count == 1 else f'{updated_count} were updated'
+        self.message_user(request, message=message_bit)
+
+    def unmark_as_draft(self, request, queryset):
+        """ Action for admin movie model to publish movies """
+
+        self.mark_as_draft(request, queryset, draft_value=False)
+
+    mark_as_draft.short_description = 'Mark selected as draft'
+    # Specify user permissions to use current action:
+    mark_as_draft.allowed_permissions = ('change',)
+
+    unmark_as_draft.short_description = 'Unmark selected as draft'
+    # Specify user permissions to use current action:
+    unmark_as_draft.allowed_permissions = ('change',)
 
     get_image.short_description = 'Poster Preview'
 
@@ -147,12 +174,15 @@ class ActorAdmin(admin.ModelAdmin):
     """ Actor admin class with options """
 
     list_display = ('id', 'name', 'age', 'image', 'get_image')
+
+    # Image field and get_image field are not the same!
+    # Image - from our model, get_image - new field for display the preview of our image.
     readonly_fields = ('get_image',)
 
     def get_image(self, obj):
         """
         Current method get the obj - current actor object
-        :param obj: Current Actor
+        :param obj: Current Actor object from models.py
         :return: MarkSafe string with img-html-tag to display current actor image
         """
 
@@ -173,13 +203,16 @@ class RatingAdmin(admin.ModelAdmin):
 @admin.register(MovieShots)
 class MovieShotsAdmin(admin.ModelAdmin):
     """ MovieShots admin class with options """
-    list_display = ('id', 'movie', 'get_image')
+    list_display = ('id', 'movie', 'image', 'get_image')
+
+    # Image field and get_image field are not the same!
+    # Image - from our model, get_image - new field for display the preview of our image.
     readonly_fields = ('get_image',)
 
     def get_image(self, obj):
         """
         Current method get the obj - current actor object
-        :param obj: Current Actor
+        :param obj: Current MovieShot object from models.py
         :return:
         """
 
