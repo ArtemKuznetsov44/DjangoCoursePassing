@@ -31,6 +31,14 @@ class MoviesListView(ListView):
     context_object_name = 'movies'
     template_name = 'movies/movies_list.html'
 
+    # def get_context_data(self, *args, **kwargs):
+    #     """ Method to config our page context data """
+    #     # First get the base context with super:
+    #     context = super().get_context_data(*args, **kwargs)
+    #     # Second add categories as new context data (as new key in dictionary of page context):
+    #     context['categories'] = Category.objects.all()
+    #     return context
+
 
 class MovieDetailView(DetailView):
     """ DetailView class for display one movie with details """
@@ -75,3 +83,13 @@ class AddReview(View):
             form.save()
 
         return redirect(movie.get_absolute_url())
+
+
+class ActorDetailView(DetailView):
+    """ DetailView class to display the information about one actor """
+
+    model = Actor
+    context_object_name = 'actor'
+    template_name = 'movies/actor.html'
+    slug_field = 'name'
+    slug_url_kwarg = 'name'
