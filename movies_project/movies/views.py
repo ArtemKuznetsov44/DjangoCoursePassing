@@ -1,29 +1,31 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.views.generic import ListView, DetailView
+from django.db.models import Q
 
 from .models import *
 from . import forms
 
 
-# Create your views here.
-# class MoviesView(View):
-#     """View class for movies"""
-#
-#     def get(self, request):
-#         movies = Movie.objects.all()
-#         return render(request, template_name='movies/movies_list.html', context={'movies': movies})
-#
-#
-# class MovieDetailView(View):
-#     """ View class for one movie with its details"""
-#
-#     def get(self, request, slug):
-#         movie = Movie.objects.get(url=slug)
-#         return render(request, template_name='movies/movie_detail.html', context={'movie': movie})
+class GenreYear:
+    """ Class for get all genres and years which are based on our movies """
+    """ 
+    Some views are inherited from current class and in template,
+    which are displayed by CBV, in django we cas use "view" variable to 
+    use all fields and methods of current class-based view. So, we also can use 
+    all methods of current "mixin" class.
+    """
+
+    def get_genres(self):
+        """ Method to return the queryset of all genres """
+        return Genre.objects.all()
+
+    def get_years(self):
+        """ Method to return the dictionary of all distinct years """
+        return Movie.objects.filter(draft=False).values_list('year', flat=True).distinct().order_by('year')
 
 
-class MoviesListView(ListView):
+class MoviesListView(GenreYear, ListView):
     """ ListView class to display all movies as list of data """
 
     model = Movie
@@ -40,7 +42,7 @@ class MoviesListView(ListView):
     #     return context
 
 
-class MovieDetailView(DetailView):
+class MovieDetailView(GenreYear, DetailView):
     """ DetailView class for display one movie with details """
 
     model = Movie
@@ -85,7 +87,7 @@ class AddReview(View):
         return redirect(movie.get_absolute_url())
 
 
-class ActorDetailView(DetailView):
+class ActorDetailView(GenreYear, DetailView):
     """ DetailView class to display the information about one actor """
 
     model = Actor
@@ -93,3 +95,21 @@ class ActorDetailView(DetailView):
     template_name = 'movies/actor.html'
     slug_field = 'name'
     slug_url_kwarg = 'name'
+
+
+class FilterMoviesView(GenreYear, ListView):
+    """ Class for filtering movies """
+    model = Movie
+    template_name = 'movies/movies_list.html'
+    context_object_name = 'movies'
+
+    def get_queryset(self):
+        # Method GETLIST instead of get, we should use, when we want to get the list of elements.
+        # If we try to use get-method to get list, we will see only the first element in collection!
+
+        # Return queryset of movies where years and genres are checked by user in forms:
+        return Movie.objects.filter(
+            # With Q class we can combine different conditions (and=&, or=|, ...) for filtering and getting objects:
+            Q(year__in=self.request.GET.getlist('year')) |      # Get the years list
+            Q(genres__in=self.request.GET.getlist('genre'))   # Get the genres list
+        ).order_by('year')  # Ordering films by year
