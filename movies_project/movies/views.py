@@ -29,18 +29,37 @@ class MoviesListView(GenreYear, ListView):
     """ ListView class to display all movies as list of data """
 
     model = Movie
-    queryset = Movie.objects.filter(draft=False)
+    # queryset = Movie.objects.filter(draft=False)
     context_object_name = 'movies'
     template_name = 'movies/movies_list.html'
 
-    # def get_context_data(self, *args, **kwargs):
-    #     """ Method to config our page context data """
-    #     # First get the base context with super:
-    #     context = super().get_context_data(*args, **kwargs)
-    #     # Second add categories as new context data (as new key in dictionary of page context):
-    #     context['categories'] = Category.objects.all()
-    #     return context
+    # TODO: Add button to clear all filters!
+    def get_queryset(self):
+        """ Method to return the queryset of all movies and with filters """
 
+        # In current block we try to get arrays with years and genres:
+        years = self.request.GET.getlist('year', None)
+        genres = self.request.GET.getlist('genre', None)
+
+        # Making the default queryset for current method:
+        base_queryset = Movie.objects.filter(draft=False)
+
+        # Make some checks to and filter our default queryset if it needs:
+        if years and not genres:
+            return base_queryset.filter(year__in=years)
+        elif genres and not years:
+            return base_queryset.filter(genres__in=genres)
+        elif genres and years:
+            return base_queryset.filter(year__in=years, genres__in=genres)
+
+        # If no event in if-block, return the default queryset:
+        return base_queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['years'] = [*map(int, self.request.GET.getlist('year', None))]
+        context['genres'] = [*map(int, self.request.GET.getlist('genre', None))]
+        return context
 
 class MovieDetailView(GenreYear, DetailView):
     """ DetailView class for display one movie with details """
@@ -96,20 +115,25 @@ class ActorDetailView(GenreYear, DetailView):
     slug_field = 'name'
     slug_url_kwarg = 'name'
 
-
-class FilterMoviesView(GenreYear, ListView):
-    """ Class for filtering movies """
-    model = Movie
-    template_name = 'movies/movies_list.html'
-    context_object_name = 'movies'
-
-    def get_queryset(self):
-        # Method GETLIST instead of get, we should use, when we want to get the list of elements.
-        # If we try to use get-method to get list, we will see only the first element in collection!
-
-        # Return queryset of movies where years and genres are checked by user in forms:
-        return Movie.objects.filter(
-            # With Q class we can combine different conditions (and=&, or=|, ...) for filtering and getting objects:
-            Q(year__in=self.request.GET.getlist('year')) |      # Get the years list
-            Q(genres__in=self.request.GET.getlist('genre'))   # Get the genres list
-        ).order_by('year')  # Ordering films by year
+# class FilterMoviesView(GenreYear, ListView):
+#     """ Class for filtering movies """
+#     model = Movie
+#     template_name = 'movies/movies_list.html'
+#     context_object_name = 'movies'
+#
+#     def get_queryset(self):
+#
+#         get_data = self.request.GET
+#
+#         if 'years' or 'genres' in get_data:
+#             pass
+#
+#         # Method GETLIST instead of get, we should use, when we want to get the list of elements.
+#         # If we try to use get-method to get list, we will see only the first element in collection!
+#
+#         # Return queryset of movies where years and genres are checked by user in forms:
+#         return Movie.objects.filter(
+#             # With Q class we can combine different conditions (and=&, or=|, ...) for filtering and getting objects:
+#             Q(year__in=self.request.GET.getlist('year')) |      # Get the years list
+#             Q(genres__in=self.request.GET.getlist('genre'))   # Get the genres list
+#         ).order_by('year')  # Ordering films by year
