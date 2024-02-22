@@ -12,14 +12,14 @@
 <!-- Here we use form with GET-method on action with url 'filter_movies' -->
 <!-- That means that we send years and genres in GET-request-list and then in view, we unpack filtering-data and
  create queryset after filtering -->
-<form method="get" action="{% url 'filter_movies' %}">
+<form method="get" action="{% url 'movies' %}" id="filter_form">
 <!--preference -->
 <div class="left-side my-4">
     <h3 class="sear-head editContent">Жанры</h3>
     <ul class="w3layouts-box-list">
         {%  for genre in view.get_genres %}
         <li class="editContent">
-            <input type="checkbox" class="checked" name="genre" value="{{ genre.id }}">
+            <input type="checkbox" name="genre" value="{{ genre.id }}" {% if genre.id in genres %} checked {% endif %}>
             <span class="span editContent">{{ genre.name }}</span>
         </li>
         {% endfor %}
@@ -30,7 +30,7 @@
     <ul class="w3layouts-box-list">
         {% for year in view.get_years %}
         <li class="editContent">
-            <input type="checkbox" class="checked" name="year" value="{{ year }}">
+            <input type="checkbox" name="year" value="{{ year }}" {% if year in years %} checked {% endif %}>
             <span class="span editContent">{{ year }}</span>
         </li>
         {% endfor %}
