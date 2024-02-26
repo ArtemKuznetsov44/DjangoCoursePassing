@@ -79,3 +79,18 @@ window.addEventListener('load', function () {
         this.localStorage.removeItem('scrollPosition')
     }
 })
+
+// Working with rating form:
+const rating = document.querySelector('form[name=rating]');
+
+rating.addEventListener('change', function(event) {
+    // Get data from form:
+    let data = new FormData(this);
+
+    fetch(`${this.action}`, {
+        method: 'POST',
+        body: data
+    })
+        .then(response => alert('Rating was set'))
+        .catch(error => alert('Error in setting rating...'))
+})

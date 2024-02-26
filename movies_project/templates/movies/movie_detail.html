@@ -61,22 +61,25 @@
                         <span><b>Сборы в США:</b> ${{ movie.fees_in_usa }}</span></li>
                     <li style="list-style: none"><span><b>Сборы в мире:</b> ${{ movie.fees_in_world }}</span>
                     </li>
-                    <li style="list-style: none">
-                        <a href="#"><b>Рейтинг:</b>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="editContent"
-                                  style="outline: none; cursor: inherit;">5.0</span>
-                        </a>
+                    <li>
+                        <form method="post" action="{% url 'add_rating' %}" name="rating">
+                            <!-- It is necessary to use csrf_token in django-post-forms -->
+                            {% csrf_token %}
+                            <b>Рейтинг:</b>
+                            <!-- Our hidden input-fields which we need to add new Rating object but user should not know about them -->
+                            <input type="hidden" value="{{ request.path }}" name="next">
+                            <input type="hidden" value="{{ movie.id }}" name="movie">
+
+                            <span class="rating">
+                                {% for key, value in rating_form.fields.star.choices %}
+                                    <input id="rating{{ value }}" type="radio" name="star" value="{{ key }}">
+                                    <label for="rating{{ value }}">{{ key }}</label>
+                                {% endfor %}
+                            </span>
+
+                        </form>
                     </li>
+                </ul>
                     <div class="share-desc">
                         <div class="share">
                             <h4 class="editContent"
@@ -135,16 +138,16 @@
                 -->
                 {{ movie.description|safe }}
             </p>
-{#            <p class="mt-3 italic-blue editContent"#}
-{#               style="outline: none; cursor: inherit;">#}
-{#                <iframe width="560" height="315"#}
-{#                        src="https://www.youtube.com/embed/A36LahZNUiE?controls=0"#}
-{#                        frameborder="0" allow="accelerometer; autoplay;#}
-{#                                                                           encrypted-media; gyroscope; picture-in-picture"#}
-{#                        allowfullscreen>#}
-{##}
-{#                </iframe>#}
-{#            </p>#}
+            {#            <p class="mt-3 italic-blue editContent"#}
+            {#               style="outline: none; cursor: inherit;">#}
+            {#                <iframe width="560" height="315"#}
+            {#                        src="https://www.youtube.com/embed/A36LahZNUiE?controls=0"#}
+            {#                        frameborder="0" allow="accelerometer; autoplay;#}
+            {#                                                                           encrypted-media; gyroscope; picture-in-picture"#}
+            {#                        allowfullscreen>#}
+            {##}
+            {#                </iframe>#}
+            {#            </p>#}
         </div>
         <hr>
         <div class="row">
@@ -230,4 +233,5 @@
             document.getElementById('contactcomment').innerText = `${reviewName}, `
         }
     </script>
+
 {% endblock movie %}
