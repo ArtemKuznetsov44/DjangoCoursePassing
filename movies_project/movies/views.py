@@ -32,8 +32,8 @@ class MoviesListView(GenreYear, ListView):
     # queryset = Movie.objects.filter(draft=False)
     context_object_name = 'movies'
     template_name = 'movies/movies_list.html'
+    paginate_by = 2
 
-    # TODO: Add button to clear all filters!
     def get_queryset(self):
         """ Method to return the queryset of all movies and with filters """
 
