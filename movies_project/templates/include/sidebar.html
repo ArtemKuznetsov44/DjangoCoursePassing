@@ -13,7 +13,10 @@
 <!-- That means that we send years and genres in GET-request-list and then in view, we unpack filtering-data and
  create queryset after filtering -->
 <form method="get" action="{% url 'movies' %}" id="filter_form">
-<!--preference -->
+
+<!-- Second button which user can use to clean all filters = to clean all get params from request -->
+<button class="btn" type="button" onclick="cleanFilters()" style="margin-top:10px;"> ✖ Clean all filters </button>
+
 <div class="left-side my-4">
     <h3 class="sear-head editContent">Жанры</h3>
     <ul class="w3layouts-box-list">
@@ -36,7 +39,7 @@
         {% endfor %}
     </ul>
 </div>
-<button type="submit"> Filter </button>
+<button class="btn" type="submit"> Filter </button>
 </form>
 <!-- //discounts -->
 <!-- reviews -->
@@ -99,3 +102,12 @@
 <!-- Call our inclusion tag to display last additions chapter whit param -->
 {% get_last_movie_additions count=2%}
 
+<script>
+
+function cleanFilters() {
+    // window.location.href - it is the current url with all get-params
+    // window.location.pathname - it is the url without get-params, the url without request-params,
+    // only the path to the view with this url on server
+    window.location.href = window.location.pathname
+}
+</script>

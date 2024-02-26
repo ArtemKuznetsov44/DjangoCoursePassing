@@ -46,8 +46,6 @@ class Actor(models.Model):
         verbose_name_plural = 'Actors'
 
 
-
-
 class Genre(models.Model):
     """Genre Model"""
     name = models.CharField(max_length=100)
@@ -137,13 +135,19 @@ class RatingStar(models.Model):
     """Rating Star Model"""
     value = models.SmallIntegerField(default=0)
 
+    def __str__(self):
+        # We shout transform our value to string, because only string value current method can return:
+        return str(self.value)
+
     class Meta:
         verbose_name = 'RatingStar'
         verbose_name_plural = 'RatingStars'
+        ordering = ['-value']
 
 
 class Rating(models.Model):
     """Rating Model"""
+    # Ip field - it is the ip-address of client who add the rating:
     ip = models.CharField(max_length=15)
     star = models.ForeignKey(to='RatingStar', on_delete=models.CASCADE)
     movie = models.ForeignKey(to='Movie', on_delete=models.CASCADE)
@@ -180,4 +184,3 @@ class Reviews(models.Model):
     class Meta:
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
-
