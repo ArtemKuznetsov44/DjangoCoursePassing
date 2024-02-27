@@ -3,10 +3,10 @@
 
 <div class="search-bar w3layouts-newsletter">
     <h3 class="sear-head editContent">Поиск фильма</h3>
-    <form action="#" method="post" class="d-flex editContent">
-        <input type="search" placeholder="Введите название..." name="search" class="form-control"
+    <form action="{% url 'search' %}" method="get" class="d-flex editContent">
+        <input type="search" placeholder="Введите название..." name="movie_name" class="form-control"
                required="">
-        <button class="btn1 btn"><span class="fa fa-search" aria-hidden="true"></span></button>
+        <button class="btn1 btn" type="submit"><span class="fa fa-search" aria-hidden="true"></span></button>
     </form>
 </div>
 <!-- Here we use form with GET-method on action with url 'filter_movies' -->
@@ -22,7 +22,7 @@
     <ul class="w3layouts-box-list">
         {%  for genre in view.get_genres %}
         <li class="editContent">
-            <input type="checkbox" name="genre" value="{{ genre.id }}" {% if genre.id in genres %} checked {% endif %}>
+            <input type="checkbox" name="genre" value="{{ genre.id }}" {% if genre.id in genres_values %} checked {% endif %}>
             <span class="span editContent">{{ genre.name }}</span>
         </li>
         {% endfor %}
@@ -33,7 +33,7 @@
     <ul class="w3layouts-box-list">
         {% for year in view.get_years %}
         <li class="editContent">
-            <input type="checkbox" name="year" value="{{ year }}" {% if year in years %} checked {% endif %}>
+            <input type="checkbox" name="year" value="{{ year }}" {% if year in years_values %} checked {% endif %}>
             <span class="span editContent">{{ year }}</span>
         </li>
         {% endfor %}
@@ -108,6 +108,8 @@ function cleanFilters() {
     // window.location.href - it is the current url with all get-params
     // window.location.pathname - it is the url without get-params, the url without request-params,
     // only the path to the view with this url on server
-    window.location.href = window.location.pathname
+
+    // We also can use Django-template tags in our JavaScript code, but current tags should be in '<tag>':
+    window.location.href =  "{% url 'movies' %}";
 }
 </script>
