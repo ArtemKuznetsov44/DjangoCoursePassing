@@ -57,8 +57,10 @@ class MoviesListView(GenreYear, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['years'] = [*map(int, self.request.GET.getlist('year', None))]
-        context['genres'] = [*map(int, self.request.GET.getlist('genre', None))]
+        context['years_values'] = [*map(int, self.request.GET.getlist('year', None))]
+        context['genres_values'] = [*map(int, self.request.GET.getlist('genre', None))]
+        context['years_for_linking'] = ''.join([f"year={x}&" for x in self.request.GET.getlist("year", None)])
+        context["genres_for_linking"] = ''.join([f"genre={x}&" for x in self.request.GET.getlist("genre", None)])
         return context
 
 
@@ -169,3 +171,24 @@ class AddStarRatingView(View):
             return HttpResponse(status=201)
         else:
             return HttpResponse(status=400)
+
+
+class SearchView(GenreYear, ListView):
+    """ ListView class to display movies by name from search-field in form """
+
+    model = Movie
+    context_object_name = 'movies'
+    template_name = 'movies/movies_list.html'
+    paginate_by = 3
+
+    def get_queryset(self):
+        # Here we use "__icontains" - it is a case-insensitive containment test.
+        return Movie.objects.filter(title__icontains=self.request.GET.get('movie_name'))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # We get movie_name from our form field with method=get and add the movie_name as a string for make right link:
+        # returned into the page context value we will set into the pagination links, because when we change our page
+        # number, we want to see the same get params:
+        context['movie_name_for_link'] = f'q={self.request.GET.get("movie_name")}&'
+        return context
