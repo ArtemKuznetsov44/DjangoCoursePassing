@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     # For its installation we need to run the command before: pip install django-ckeditor.
     'ckeditor',
     'ckeditor_uploader',
-    'movies.apps.MoviesConfig'
+    'movies.apps.MoviesConfig',
+    # Add our recaptcha extension:
+    'snowpenguin.django.recaptcha3'
 ]
 
 MIDDLEWARE = [
@@ -216,3 +218,8 @@ CKEDITOR_CONFIGS = {
         ]),
     }
 }
+
+RECAPTCHA_PUBLIC_KEY = '6LcCA5EpAAAAAHoRer5qXphc4EcZPgSzjY0H3P86'
+RECAPTCHA_PRIVATE_KEY = '6LcCA5EpAAAAALmbezGzQ8X0pTOHDEBHHwdYJrDJ'
+RECAPTCHA_DEFAULT_ACTION = 'generic'
+RECAPTCHA_SCORE_THRESHOLD = 0.5

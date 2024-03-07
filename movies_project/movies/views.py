@@ -81,8 +81,9 @@ class MovieDetailView(GenreYear, DetailView):
         """
 
         context = super().get_context_data(**kwargs)
-        # Create new instance of RatingForm and add it to the page context:
+        # Create new instance of RatingForm and add it to the page context + AddReviewForm:
         context['rating_form'] = forms.RatingForm()
+        context['review_form'] = forms.AddReviewForm()
         return context
 
 
@@ -190,5 +191,5 @@ class SearchView(GenreYear, ListView):
         # We get movie_name from our form field with method=get and add the movie_name as a string for make right link:
         # returned into the page context value we will set into the pagination links, because when we change our page
         # number, we want to see the same get params:
-        context['movie_name_for_link'] = f'q={self.request.GET.get("movie_name")}&'
+        context['movie_name_for_link'] = f'movie_name={self.request.GET.get("movie_name")}&'
         return context

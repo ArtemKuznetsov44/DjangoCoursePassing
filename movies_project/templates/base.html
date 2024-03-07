@@ -1,6 +1,7 @@
 <!-- This is OUR MAIN html file where we connect our static files and our content split into several files -->
 <!DOCTYPE html>
-{% load static %}
+<!-- We need to use not only an opportunity to work with static, but we also need to work with our recaptcha - load it too -->
+{% load static recaptcha3 %}
 <html lang="ru">
 <head>
     <!-- //Meta tag Keywords -->
@@ -23,6 +24,9 @@
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900"
           rel="stylesheet">
     <!-- //Fonts -->
+
+    {% recaptcha_init %}
+    {% recaptcha_ready action_name='homepage' %}
 </head>
 <body>
 <!-- mian-content div block -->
