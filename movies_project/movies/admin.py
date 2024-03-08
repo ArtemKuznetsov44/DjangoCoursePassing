@@ -3,6 +3,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib.admin.options import StackedInline
 from .models import *
+from modeltranslation.admin import TranslationAdmin
 
 # Here we describe the class for ckeditor widget:
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -14,7 +15,8 @@ class MovieAdminForm(forms.ModelForm):
 
     # This is our field with CKEditorWidget or CKEditorUploadingWidget.
     # The name of current field is the same as in Movie model
-    description = forms.CharField(widget=CKEditorUploadingWidget())
+    description_ru = forms.CharField(label='Description', widget=CKEditorUploadingWidget())
+    description_en = forms.CharField(label='Description', widget=CKEditorUploadingWidget())
 
     class Meta:
         # We use Movie model just because we want to work with it:
@@ -66,7 +68,7 @@ class MovieShotsInLine(admin.TabularInline):
 
 
 @admin.register(Movie)
-class MovieAdmin(admin.ModelAdmin):
+class MovieAdmin(TranslationAdmin):
     """ Movie admin class with options """
 
     list_display = ('title', 'category', 'url', 'draft')
@@ -164,13 +166,13 @@ class ReviewsAdmin(admin.ModelAdmin):
 
 
 @admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
+class GenreAdmin(TranslationAdmin):
     """ Genre admin class with options """
     list_display = ('id', 'name', 'url')
 
 
 @admin.register(Actor)
-class ActorAdmin(admin.ModelAdmin):
+class ActorAdmin(TranslationAdmin):
     """ Actor admin class with options """
 
     list_display = ('id', 'name', 'age', 'image', 'get_image')
@@ -201,7 +203,7 @@ class RatingAdmin(admin.ModelAdmin):
 
 
 @admin.register(MovieShots)
-class MovieShotsAdmin(admin.ModelAdmin):
+class MovieShotsAdmin(TranslationAdmin):
     """ MovieShots admin class with options """
     list_display = ('id', 'movie', 'image', 'get_image')
 

@@ -1,5 +1,5 @@
 {% extends 'movies/base.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block title %} {{ movie.title }} {% endblock title %}
 {% block container %}
@@ -22,13 +22,13 @@
                 </h3>
                 <h5 class="editContent"></h5>
                 <ul>
-                    <li style="list-style: none"><span><b>Год:</b> {{ movie.year }}</span></li>
-                    <li style="list-style: none"><span><b>Страна:</b> {{ movie.country }}</span>
+                    <li style="list-style: none"><span><b>{% trans Год %}:</b> {{ movie.year }}</span></li>
+                    <li style="list-style: none"><span><b>{% trans Страна %}:</b> {{ movie.country }}</span>
                     </li>
-                    <li style="list-style: none"><span><b>Слоган:</b> {{ movie.tagline }}</span>
+                    <li style="list-style: none"><span><b>{% trans Слоган %}:</b> {{ movie.tagline }}</span>
                     </li>
                     <li style="list-style: none">
-                                    <span><b>Режиссер:</b>
+                                    <span><b>{% trans Режиссер %}:</b>
                                         <!-- Because our movie directors, genres and actors are many_to_many relationship,
                                             we need to get them with FOR loop!
                                             When we use M2M relationship django automatically creates the new special table
@@ -40,32 +40,32 @@
                                     </span>
                     </li>
                     <li style="list-style: none">
-                                    <span><b>Актеры:</b>
+                                    <span><b>{% trans Актеры %}:</b>
                                         {% for actor in movie.actors.all %}
                                             <a href="{{ actor.get_absolute_url }}"> {{ actor.name }} </a>
                                         {% endfor %}
                                 </span>
                     </li>
                     <li style="list-style: none">
-                                    <span><b>Жанр:</b>
+                                    <span><b>{% trans Жанр %}:</b>
                                         {% for genre in movie.genres.all %}
                                             {{ genre.name }}
                                         {% endfor %}
                                     </span>
                     </li>
-                    <li style="list-style: none"><span><b>Премьера в мире:</b> {{ movie.world_premier }}</span>
+                    <li style="list-style: none"><span><b>{% trans Премьера в мире %}:</b> {{ movie.world_premier }}</span>
                     </li>
                     <li style="list-style: none">
-                        <span><b>Бюджет:</b> ${{ movie.budget }}</span></li>
+                        <span><b>{% trans Бюджет %}:</b> ${{ movie.budget }}</span></li>
                     <li style="list-style: none">
-                        <span><b>Сборы в США:</b> ${{ movie.fees_in_usa }}</span></li>
-                    <li style="list-style: none"><span><b>Сборы в мире:</b> ${{ movie.fees_in_world }}</span>
+                        <span><b>{% trans Сборы в США %}:</b> ${{ movie.fees_in_usa }}</span></li>
+                    <li style="list-style: none"><span><b>{% trans Сборы в мире %}:</b> ${{ movie.fees_in_world }}</span>
                     </li>
                     <li>
                         <form method="post" action="{% url 'add_rating' %}" name="rating">
                             <!-- It is necessary to use csrf_token in django-post-forms -->
                             {% csrf_token %}
-                            <b>Рейтинг:</b>
+                            <b>{% trans Рейтинг %}:</b>
                             <!-- Our hidden input-fields which we need to add new Rating object but user should not know about them -->
                             <input type="hidden" value="{{ request.path }}" name="next">
                             <input type="hidden" value="{{ movie.id }}" name="movie">
