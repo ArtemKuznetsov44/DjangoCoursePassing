@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'movies.apps.MoviesConfig',
+    'contact.apps.ContactConfig',
     # Add our recaptcha extension:
     'snowpenguin.django.recaptcha3'
 ]
