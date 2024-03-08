@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     # Ckeditor - it is the app, which we can use as text-editor for our admin-panel.
     # For its installation we need to run the command before: pip install django-ckeditor.
     'ckeditor',
@@ -53,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
 ]
 
 ROOT_URLCONF = 'movies_project.urls'
@@ -223,3 +226,6 @@ RECAPTCHA_PUBLIC_KEY = '6LcCA5EpAAAAAHoRer5qXphc4EcZPgSzjY0H3P86'
 RECAPTCHA_PRIVATE_KEY = '6LcCA5EpAAAAALmbezGzQ8X0pTOHDEBHHwdYJrDJ'
 RECAPTCHA_DEFAULT_ACTION = 'generic'
 RECAPTCHA_SCORE_THRESHOLD = 0.5
+
+
+SITE_ID = 1
