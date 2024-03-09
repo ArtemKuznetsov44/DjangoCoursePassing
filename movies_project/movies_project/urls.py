@@ -26,10 +26,12 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     ]
 
+
 urlpatterns += i18n_patterns(
+    path('accounts/', include('allauth.urls')),
     path('pages/', include('django.contrib.flatpages.urls')),
-    path('contact/', include('contact.urls')),
-    path('', include('movies.urls')),
+    path('contact/', include("contact.urls")),
+    path("", include("movies.urls")),
 )
 
 # If our project in DEBUG mode:
