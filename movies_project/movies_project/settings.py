@@ -46,7 +46,11 @@ INSTALLED_APPS = [
     'movies.apps.MoviesConfig',
     'contact.apps.ContactConfig',
     # Add our recaptcha extension:
-    'snowpenguin.django.recaptcha3'
+    'snowpenguin.django.recaptcha3',
+
+    # Include allauth app and allauth.account:
+    'allauth',
+    'allauth.account',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +59,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -106,6 +111,11 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+)
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -134,6 +144,17 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1  # Count of days to confirm user-email address
+# Min-length for username:
+ACCOUNT_USERNAME_MIN_LENGTH = 4
+
+# URL-param to redirect user after success-login operation:
+LOGIN_REDIRECT_URL = 'movies'
+
+# Current settings we use for confirm user email address in console:
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 gettext = lambda s: s
 
