@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     # Include allauth app and allauth.account:
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.vk',
 ]
 
 MIDDLEWARE = [
